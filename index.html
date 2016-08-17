@@ -104,56 +104,59 @@
 		// convert key to variable
 		var guess = String.fromCharCode(event.keyCode).toUpperCase();	
 	
-		
-		if (guessArray.indexOf(guess) > -1) {
-			alert("You have already selected this letter, please select again.");
-		}	else {
-				// store, sort, and print guess into blank array
-				guessArray.push(guess);
-				guessArray.sort(guessArray)
-				$('#guesses').html(guessArray);
-			
-				// if argument with win and loss conditions
-				if ( (correctCount < word.length) && (lives > 0) ) { 
-					// test guess against every letter in word
-					for (i = 0; i < word.length; i++) {
-						if (guess == wordArray[i]) {
-							// reveal guessed letter in blank array
-							blankArray[i] = wordArray[i];
-							// print guessed letter into blank array
-							$('#answer').html(blankArray);
-							// flag correct so that win decision tree can be triggered
-							correct = true;
-							// count the correct letters to verify win
-							correctCount++;
+		// checking for A-Z input
+		if (event.keyCode >= 65 && event.keyCode <= 90) { 
+			// check for duplicate input
+			if (guessArray.indexOf(guess) > -1) {
+				alert("You have already selected this letter, please select again.");
+			}	else {
+					// store, sort, and print guess into blank array
+					guessArray.push(guess);
+					guessArray.sort(guessArray)
+					$('#guesses').html(guessArray);
+				
+					// if argument with win and loss conditions
+					if ( (correctCount < word.length) && (lives > 0) ) { 
+						// test guess against every letter in word
+						for (i = 0; i < word.length; i++) {
+							if (guess == wordArray[i]) {
+								// reveal guessed letter in blank array
+								blankArray[i] = wordArray[i];
+								// print guessed letter into blank array
+								$('#answer').html(blankArray);
+								// flag correct so that win decision tree can be triggered
+								correct = true;
+								// count the correct letters to verify win
+								correctCount++;
+							}
 						}
+
+						// win/loss 
+						if (correct) {
+							// reset correct
+							correct = false;
+						}	else {
+								// subtract a life
+								lives--;
+								$('#lives').html("Lives: " + lives);
+								$('#hangman').html('<img class="img-responsive" src="assets/images/hangman' + lives + '.png">');
+							}
+					}	
+							
+					// win or game over
+					if (correctCount == word.length) {
+						console.log("YOU WIN");
+						$('#message-box').html("YOU WIN! Refresh page to play again");
+					} 	
+
+					if (lives == 0) {
+						$('#lives').html("GAME OVER");
+						$('#message-box').html('GAME OVER. Refresh page to play again');
+						$('#final-answer').html('Answer: ' + word);
+
 					}
-
-					// win/loss 
-					if (correct) {
-						// reset correct
-						correct = false;
-					}	else {
-							// subtract a life
-							lives--;
-							$('#lives').html("Lives: " + lives);
-							$('#hangman').html('<img class="img-responsive" src="assets/images/hangman' + lives + '.png">');
-						}
-				}	
-						
-				// win or game over
-				if (correctCount == word.length) {
-					console.log("YOU WIN");
-					$('#message-box').html("YOU WIN! Refresh page to play again");
-				} 	
-
-				if (lives == 0) {
-					$('#lives').html("GAME OVER");
-					$('#message-box').html('GAME OVER. Refresh page to play again');
-					$('#final-answer').html('Answer: ' + word);
-
 				}
-			}
+		}
 	}
 </script>
 
