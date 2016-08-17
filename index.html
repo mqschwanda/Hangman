@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Hangman</title>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="style.css">	
+ 	</head>
+ 	<body>
+		
+		<!-- Container -->
+		<div class="container-fluid">
+			
+			<!-- Header -->
+			<div class="page-header text-center">
+    			<h1>Hangman Game</h1>
+  			</div>
+			
+			<div class="row">
+				
+				
+			<div class="col-xs-7 col-sm-8 col-md-9">
+				<div class="panel-group">
+					
+						<!-- Message Box -->
+						<div class="panel panel-default">
+					 		<div class="panel-body">
+						 		<h4 id="message-box" class="text-center">Press any key to enter a guess</h4>
+						  	</div>
+						</div>	<!-- Message Box -->
+
+						<!-- Answer Box -->
+						<div class="col-md-6 panel panel-default">
+					 		<div class="panel-body">
+						 		<div id="answer" class="text-center"></div>
+						 		<div id="final-answer" class="text-center"></div>
+						  	</div>
+						</div>	<!-- Answer Box -->
+
+						<!-- Guesses Box-->
+				 		<div class="col-md-6 panel panel-default">
+					 		<div class="panel-body">
+					 			<h5 class="text-center">Guesses:</h5>
+					 			<div id="guesses" class="text-center guesses"></div>
+					 		</div>
+					 	</div>	<!-- Guesses Box-->
+
+				</div>
+				</div>
+
+				<!-- Hangman Box -->
+				<div class="col-xs-5 col-sm-4 col-md-3">
+					<div class="panel panel-default">
+				 		<div class="panel-header">
+				 			<h3 id="lives" class="text-center"></h3>
+					  	</div>
+				 		<div class="panel-body">
+				 			<div id="hangman"><img class="img-responsive" src="images/hangman6.png"></div>
+				 		</div>
+					</div>
+				</div> <!-- Hangman Box -->
+
+
+			</div> <!-- Row -->
+
+		</div>	<!-- Container -->
+
+<script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+	
+	// declare variables
+	var lives = 6; 
+	var word = ''; 
+	var guess = '';
+	var wordArray = [];
+	var guessArray = [];
+	var blankArray = [];
+	var correctCount = 0;
+	var correct = false;
+	var wordOptions = ['ACTUALLY','ADDITION','ALTHOUGH','AMERICAN','ANYTHING','BUILDING','BUSINESS','CHILDREN','COMPLETE','CONSIDER','CONTINUE','DECISION','DIRECTLY','DISTRICT','ECONOMIC','EVIDENCE','EXPECTED','FOLLOWED','HAPPENED','INCREASE']
+	
+	// Create code to randomly choose one of the words from the array
+	var word = wordOptions[Math.floor(Math.random()*wordOptions.length)]
+	console.log(word);
+	
+	// Log word into array and set up blank array for display
+	for (i = 0; i < word.length; i++) {
+		wordArray.push(word.charAt(i));
+		blankArray.push("-");
+	}
+
+	// print blank array and lives into document
+	$('#answer').html(blankArray);
+	$('#lives').html("Lives: " + lives);
+
+	// Keystroke event
+	document.onkeyup = function(event) {
+		// convert key to variable
+		var guess = String.fromCharCode(event.keyCode).toUpperCase();	
+	
+		
+		if (guessArray.indexOf(guess) > -1) {
+			alert("You have already selected this letter, please select again.");
+		}	else {
+				// store, sort, and print guess into blank array
+				guessArray.push(guess);
+				guessArray.sort(guessArray)
+				$('#guesses').html(guessArray);
+			
+				// if argument with win and loss conditions
+				if ( (correctCount < word.length) && (lives > 0) ) { 
+					// test guess against every letter in word
+					for (i = 0; i < word.length; i++) {
+						if (guess == wordArray[i]) {
+							// reveal guessed letter in blank array
+							blankArray[i] = wordArray[i];
+							// print guessed letter into blank array
+							$('#answer').html(blankArray);
+							// flag correct so that win decision tree can be triggered
+							correct = true;
+							// count the correct letters to verify win
+							correctCount++;
+						}
+					}
+
+					// win/loss 
+					if (correct) {
+						// reset correct
+						correct = false;
+					}	else {
+							// subtract a life
+							lives--;
+							$('#lives').html("Lives: " + lives);
+							$('#hangman').html('<img class="img-responsive" src="images/hangman' + lives + '.png">');
+						}
+				}	
+						
+				// win or game over
+				if (correctCount == word.length) {
+					console.log("YOU WIN");
+					$('#message-box').html("YOU WIN! Refresh page to play again");
+				} 	
+
+				if (lives == 0) {
+					$('#lives').html("GAME OVER");
+					$('#message-box').html('GAME OVER. Refresh page to play again');
+					$('#final-answer').html('Answer: ' + word);
+
+				}
+			}
+	}
+</script>
+
+		<!-- Footer -->	
+		<footer class="footer">
+		    <div class="container">
+		   		<p class="text-muted text-center">&copy; Copyright 2016 Mark Q Schwanda</p>
+			</div>
+		</footer>
+
+	</body>
+</html>
+
